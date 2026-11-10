@@ -1,6 +1,6 @@
 # Protocol decision and implementation status
 
-Decision: preserve MIT licensing through an independent implementation. No NearDrop or rquickshare source is copied or linked. rquickshare is GPL-3.0 and must not be introduced as an MIT dependency. Descriptions below are protocol facts, not copied implementation code. Dependency versions are pinned by Cargo.lock; review their licenses again before distribution. No upstream implementation notices are required for code that has not been reused.
+Decision: preserve MIT licensing through an independent implementation. No NearDrop or rquickshare transfer implementation is copied or linked. Google Apache-2.0 protobuf schemas are now vendored with their headers and license; see THIRD_PARTY_NOTICES.md. rquickshare is GPL-3.0 and must not be introduced as an MIT dependency. Descriptions below are protocol facts, not copied implementation code. Dependency versions are pinned by Cargo.lock; review their licenses again before distribution. The original Google schema notices are retained.
 
 References inspected on 2026-11-10:
 
@@ -25,7 +25,7 @@ A matching advertisement is only a candidate recipient. It does not establish a 
 6. Send introduction with bounded file metadata and payload IDs. Await ACCEPT before streaming file chunks. Send keepalives every ten seconds. Reject malformed offsets, lengths and sequence numbers. Cancellation must close the connection and discard pending work.
 7. Stream bounded chunks from an explicitly selected open file, detect changes/truncation, and report acknowledged completion accurately. A QR match alone must never be reported as transfer success.
 
-The four-byte big-endian framing helpers enforce a one-MiB allocation limit. Socket deadlines, protobuf schemas, UKEY2, secure envelopes, acceptance and payload transport are still missing.
+The four-byte big-endian framing helpers enforce a one-MiB allocation limit. Protobuf schemas, a single-use UKEY2 initiator, and authenticated secure envelopes are implemented. Socket integration, responder handshake, acceptance and payload transport are still missing. UKEY2 follows the deployed Google implementation: SHA-512 commitments, SHA-256-hashed ECDH, SHA-256 HKDF and a NUL-terminated auth salt and a next-secret salt without a terminator. Secure envelopes authenticate before decrypting, require monotonic sequence numbers, and poison the connection on any receive error. Local tests are not independent interoperability vectors.
 
 ## Receiver design, pending implementation
 
@@ -34,3 +34,5 @@ Advertise a fresh four-character endpoint ID with the documented service ID and 
 ## Gates
 
 No Android device has been exercised. Milestone 2 has not passed, so PLAN.md explicitly blocks desktop UI expansion. All send/receive combinations remain untested, including macOS. Hardware validation must record phone model, Android/Quick Share versions, desktop version/architecture, network and independent SHA-256 checks. Empty, Unicode and >1GB files, cancellation, rejection and network loss remain mandatory. Desktop packaging, background receiving, Linux/Windows, signing and iOS feasibility are pending. iOS system interoperability is not promised.
+
+The user deferred final hardware tests on 2026-11-10 and authorized continued implementation beyond the original device gate. No device gate is marked passed.

@@ -158,3 +158,7 @@ mod tests {
         assert_eq!(session.encoded.len(), 35);
     }
 }
+
+pub mod handshake;
+pub mod proto;
+pub mod secure;
