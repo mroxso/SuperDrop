@@ -1,0 +1,13 @@
+[package]
+name = "superdrop-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+base64 = "0.22"
+hkdf = "0.12"
+p256 = { version = "0.13", features = ["ecdh"] }
+rand_core = { version = "0.6", features = ["getrandom"] }
+sha2 = "0.10"
+aes-gcm = "0.10"
